@@ -42,10 +42,10 @@ jobs:
     
       - name: Message success
         if: ${{ success() }}
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5.1.1
         with:
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -53,10 +53,10 @@ jobs:
             });          
       - name: Message failure
         if: ${{ failure() }}
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5.1.1
         with:
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
