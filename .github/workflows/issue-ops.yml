@@ -17,4 +17,4 @@ jobs:
           echo $COMMENTER
         env:
           NUMBER: ${{ github.event.issue.number }}
-          COMMENTER: ${{ github.event.issue.comment.user.login }}
+          COMMENTER: ${{ github.event.comment.user.login }}
