@@ -15,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: fp-ops
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5.1.1
         with:
           script: |
             const { owner, repo, number } = context.issue;
             const comments = await github.issues.listComments({
-              owner: owner,
-              repo: repo,
+              owner: context.issue.owner,
+              repo: context.issue.repo,
               issue_number: number,
             });
             github.issues.createComment({
-              issue_number: number,
-              owner: owner,
-              repo: repo,
+              issue_number: context.issue.number,
+              owner: context.issue.owner,
+              repo: context.issue.repo,
               body: comments,
             });          
             return comments;
