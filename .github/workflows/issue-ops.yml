@@ -9,7 +9,9 @@ jobs:
   issue_commented:
     # This job only runs for pull request comments
     name: check approval
-    if: ${{ !github.event.issue.pull_request }}
+    if: ${{ !github.event.issue.pull_request && 
+      contains(github.event.issue.labels.*.name, 'FP Report' }} &&
+      contains(github.event.comment.user.login, 'jeremylong')
     runs-on: ubuntu-latest
     steps:
       - run: |
