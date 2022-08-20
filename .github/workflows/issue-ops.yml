@@ -2,7 +2,7 @@ name: fpBot
 
 on:
   issue_comment:
-    types: [ edited ]
+    types: [ created ]
 
 
 jobs:
@@ -19,4 +19,4 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
           COMMENTER: ${{ github.event.comment.user.login }}
-          COMMENT: ${{ github.event.comment }}
+          COMMENT: ${{ github.event.comment.body }}
