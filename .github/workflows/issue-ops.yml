@@ -14,9 +14,7 @@ jobs:
     steps:
       - run: |
           echo A comment on issue $NUMBER
-          echo $COMMENT
           echo $COMMENTER
         env:
           NUMBER: ${{ github.event.issue.number }}
-          COMMENT: ${{ github.event.issue }}
           COMMENTER: ${{ github.event.issue.comment.user.login }}
