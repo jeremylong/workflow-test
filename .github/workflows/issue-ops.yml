@@ -16,20 +16,21 @@ jobs:
     steps:
       - name: fp-ops
         uses: actions/github-script@v4
-        script: |
-          const { owner, repo, number } = context.issue;
-          const comments = await github.issues.listComments({
-            owner,
-            repo,
-            issue_number,
-          });
-          github.issues.createComment({
-            issue_number: number,
-            owner: owner,
-            repo: repo,
-            body: comments,
-          });          
-          return comments;
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+            const comments = await github.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+            });
+            github.issues.createComment({
+              issue_number: number,
+              owner: owner,
+              repo: repo,
+              body: comments,
+            });          
+            return comments;
       - name: info
         run: |
           echo A comment on issue $NUMBER
