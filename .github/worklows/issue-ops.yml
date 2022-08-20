@@ -1,0 +1,22 @@
+name: fpBot
+
+on:
+  issue_comment:
+    types: [ edited ]
+
+
+jobs:
+  issue_commented:
+    # This job only runs for pull request comments
+    name: check approval
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo A comment on issue $NUMBER
+          echo $COMMENT
+          echo $COMMENTER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          COMMENT: ${{ github.event.issue.comment }}
+          COMMENTER: ${{ github.event.issue.comment.user.login }}
