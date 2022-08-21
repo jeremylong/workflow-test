@@ -27,7 +27,7 @@ jobs:
             
             const botComments = comments.filter(comment => 
               (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) 
-              //&& comment.body.includes('Suppression rule:')
+              && comment.body.includes('<suppress base="true">')
             )
             console.log('---------------------------');
             console.log(botComments);
