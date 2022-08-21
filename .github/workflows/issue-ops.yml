@@ -26,8 +26,8 @@ jobs:
             })
             
             const botComments = comments.filter(comment => 
-              (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) && 
-              comment.body.includes('Suppression rule:')
+              (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) 
+              //&& comment.body.includes('Suppression rule:')
             )
             console.log('---------------------------');
             console.log(botComments);
@@ -39,14 +39,7 @@ jobs:
             }
             const lastComment = botComments[botComments.length-1];
 
-            //github-actions
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.issue.owner,
-              repo: context.issue.repo,
-              body: comments,
-            });
-            return comments;
+            return lastComment;
       - name: info
         run: |
           echo A comment on issue $NUMBER
