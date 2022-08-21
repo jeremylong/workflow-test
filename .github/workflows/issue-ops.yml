@@ -36,7 +36,7 @@ jobs:
             } 
             const lastComment = botComments[botComments.length-1];
             const data = lastComment.body.split('```');
-            const suppression = data[data.length-2].substring(3);
+            const suppression = data[data.length-2].substring(3).trim();
 
             
             console.log('---------------------------');
