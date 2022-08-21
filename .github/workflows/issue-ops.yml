@@ -47,7 +47,7 @@ jobs:
             const parser = new XMLParser(options);
             let sxml = parser.parse(suppression);
             console.log('---------------------------');
-            console.log(sxml.notes);
+            console.log(sxml);
             console.log('---------------------------');
             return lastComment;
       - name: info
