@@ -25,10 +25,10 @@ jobs:
               repo: context.issue.repo,
             })
             
-            const botComments = comments.find(comment => {
-              return (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) && 
+            const botComments = comments.filter(comment => 
+              (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) && 
               comment.body.includes('Suppression rule:')
-            });
+            )
             if (botComments.length<=0) {
               core.setFailed('Suppression rule from github-actions not found');
             }
