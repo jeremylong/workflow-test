@@ -18,17 +18,34 @@ jobs:
         uses: actions/github-script@v5.1.1
         with:
           script: |
-            const comments = await github.rest.issues.listComments({
+            export function setFailed(message: string | Error): void {
+              process.exitCode = ExitCode.Failure
+
+              error(message)
+            }
+
+            const { data: comments } = = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.issue.owner,
               repo: context.issue.repo,
             })
+            
+            const botComments = comments.filter((comment => 
+              (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) && 
+              comment.body.includes('Suppression rule:')
+            )
+            if (botComments.length<=0) {
+              setFailed('Suppression rule from github-actions not found');
+            }
+            const lastComment = botComments[botComments.length-1];
+
+            //github-actions
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.issue.owner,
               repo: context.issue.repo,
               body: comments,
-            });          
+            });
             return comments;
       - name: info
         run: |
