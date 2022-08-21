@@ -19,7 +19,7 @@ jobs:
         with:
           script: |
 
-            const { data: comments } = = await github.rest.issues.listComments({
+            const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.issue.owner,
               repo: context.issue.repo,
