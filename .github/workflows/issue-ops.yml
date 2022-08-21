@@ -20,14 +20,15 @@ jobs:
         uses: actions/github-script@v5.1.1
         with:
           script: |
-            const xml = require("fast-xml-parser");
+            const {XMLParser} = require("fast-xml-parser");
+
             const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.issue.owner,
               repo: context.issue.repo,
             })
             
-            const botComments = comments.filter(comment => 
+            let botComments = comments.filter(comment => 
               (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) 
               && comment.body.includes('<suppress base="true">')
               && comment.body.includes('Suppression rule:')
@@ -36,13 +37,17 @@ jobs:
             if (botComments.length<=0) {
               core.setFailed('Suppression rule from github-actions not found');
             } 
-            const lastComment = botComments[botComments.length-1];
-            const data = lastComment.body.split('```');
-            const suppression = data[data.length-2].substring(3).trim();
-
+            let lastComment = botComments[botComments.length-1];
+            let data = lastComment.body.split('```');
+            let suppression = data[data.length-2].substring(3).trim();
             
+            const options = {
+                ignoreAttributes : false
+            };
+            const parser = new XMLParser(options);
+            let sxml = parser.parse(suppression);
             console.log('---------------------------');
-            console.log(suppression);
+            console.log(sxml.notes);
             console.log('---------------------------');
             return lastComment;
       - name: info
