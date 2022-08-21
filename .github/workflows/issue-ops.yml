@@ -29,6 +29,11 @@ jobs:
               (comment.user.login === 'github-actions' || comment.user.login === 'jeremylong' ) && 
               comment.body.includes('Suppression rule:')
             )
+            console.log('---------------------------');
+            console.log(botComments);
+            console.log('---------------------------');
+            console.log(comments);
+            console.log('---------------------------');
             if (botComments.length<=0) {
               core.setFailed('Suppression rule from github-actions not found');
             }
