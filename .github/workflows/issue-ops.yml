@@ -36,7 +36,7 @@ jobs:
             }
             const lastComment = botComments[botComments.length-1];
             console.log('---------------------------');
-            console.log(lastComment);
+            console.log(lastComment.body);
             console.log('---------------------------');
             return lastComment;
       - name: info
