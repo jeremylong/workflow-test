@@ -19,8 +19,8 @@ jobs:
           ref: generatedSuppressions
       - uses: actions/setup-node@v3
       - run: |
-        npm install fast-xml-parser@4.0.9
-        npm install fs
+          npm install fast-xml-parser@4.0.9
+          npm install fs
       - name: fp-ops
         uses: actions/github-script@v5.1.1
         with:
