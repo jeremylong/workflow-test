@@ -53,7 +53,7 @@ jobs:
             let sxml = parser.parse(suppression);
 
             let commitComment = sxml.suppress.notes.trim();
-            commitComment = commitComment.replaceAll(/[[\]{}`'";|\/\\]/g, '');
+            commitComment = commitComment.replace(/[[\]{}`'";|\/\\]/g, '');
 
             console.log('---------------------------');
             console.log(commitComment);
