@@ -60,7 +60,7 @@ jobs:
             console.log('---------------------------');
 
             
-            await fs.appendFile('generatedSuppressions.xml', '\n' + suppression, function (err) {
+            fs.appendFile('generatedSuppressions.xml', '\n' + suppression, function (err) {
               if (err) throw err;
               console.log('add suppression');
             });
