@@ -7,13 +7,16 @@ on:
 
 jobs:
   issue_commented:
-    name: check approval
+    name: update suppression
     if: ${{ !github.event.issue.pull_request && 
       contains(github.event.issue.labels.*.name, 'FP Report') && 
       contains(github.event.comment.body,'approved') &&
       contains(github.event.comment.user.login, 'jeremylong') }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: generatedSuppressions
       - uses: actions/setup-node@v3
       - run: npm install fast-xml-parser@4.0.9
       - name: fp-ops
@@ -21,6 +24,8 @@ jobs:
         with:
           script: |
             const {XMLParser} = require("fast-xml-parser");
+            const {fs} = require('fs');
+            const {child_process} = require("child_process");
 
             const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
@@ -47,25 +52,33 @@ jobs:
             const parser = new XMLParser(options);
             let sxml = parser.parse(suppression);
 
-            let commitComment = sxml.suppress.notes.trim();
+            let commitComment = sxml.suppress.notes.trim().replaceAll('[\'";\\/]', '');
 
             console.log('---------------------------');
             console.log(commitComment);
             console.log('---------------------------');
-            return lastComment;
-      - name: info
-        run: |
-          echo A comment on issue $NUMBER
-          echo $COMMENTER
-          echo $COMMENT
+
+            
+            await fs.appendFile('generatedSuppressions.xml', '\n' + suppression, function (err) {
+              if (err) throw err;
+              console.log('add suppression');
+            });
+            
+            child_process.exec('git commit -m ' + commitComment + ' generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
+              if (err) throw error;
+              console.log('committed suppression');
+            });
+
+       - name: Message success
+        if: ${{ success() }}
+        uses: actions/github-script@v5.1.1
         env:
-          NUMBER: ${{ github.event.issue.number }}
-          COMMENTER: ${{ github.event.comment.user.login }}
-          COMMENT: ${{ github.event.comment.body }}
-    
+           MSG: '${{steps.set-result.outputs.result}}'   
       - name: Message success
         if: ${{ success() }}
         uses: actions/github-script@v5.1.1
+        env:
+           MSG: '${{steps.set-result.outputs.result}}'
         with:
           script: |
             github.rest.issues.createComment({
