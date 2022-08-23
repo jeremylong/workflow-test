@@ -52,7 +52,8 @@ jobs:
             const parser = new XMLParser(options);
             let sxml = parser.parse(suppression);
 
-            let commitComment = sxml.suppress.notes.trim().replaceAll(/['";|\/\\]/, '');
+            let commitComment = sxml.suppress.notes.trim();
+            commitComment = commitComment.replaceAll(/[[\]{}`'";|\/\\]/g, '');
 
             console.log('---------------------------');
             console.log(commitComment);
