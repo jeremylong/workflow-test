@@ -67,13 +67,7 @@ jobs:
             child_process.exec('git commit -m ' + commitComment + ' generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
               if (err) throw error;
               console.log('committed suppression');
-            });
-
-       - name: Message success
-        if: ${{ success() }}
-        uses: actions/github-script@v5.1.1
-        env:
-           MSG: '${{steps.set-result.outputs.result}}'   
+            }); 
       - name: Message success
         if: ${{ success() }}
         uses: actions/github-script@v5.1.1
