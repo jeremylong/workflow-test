@@ -59,13 +59,15 @@ jobs:
 
             //validate we haven't already suppressed this one.
             const generatedSuppressions = fs.readFileSync('generatedSuppressions.xml', 'utf8');
-            let suppressionArray = parser.parse(generatedSuppressions);
+            let rules = parser.parse(generatedSuppressions);
             console.log('--------------------------------');
-            console.log(suppressionArray.suppress[0]);
-            console.log(suppressionArray.suppress[0].packageUrl);
-            console.log('--------------------------------');
-
+            console.log(rules.suppress[0]);
             
+            
+            for (r of rules.suppress) {
+              console.log(r.packageUrl);
+            }
+            console.log('--------------------------------');
             fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
               if (err) throw err;
               console.log('add suppression');
