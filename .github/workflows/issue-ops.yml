@@ -67,7 +67,7 @@ jobs:
             
             var child_process = require("child_process");
             child_process.exec('git commit -m ' + commitComment + ' generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
-              if (err) throw error;
+              if (err) throw err;
               console.log('committed suppression');
             }); 
       - name: Message success
