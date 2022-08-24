@@ -26,9 +26,7 @@ jobs:
         with:
           script: |
             const {XMLParser} = require("fast-xml-parser");
-            const {fs} = require('fs');
-            const {child_process} = require("child_process");
-
+            
             const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.issue.owner,
@@ -61,12 +59,13 @@ jobs:
             console.log(commitComment);
             console.log('---------------------------');
 
-            
+            var fs = require('fs');
             fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
               if (err) throw err;
               console.log('add suppression');
             });
             
+            var child_process = require("child_process");
             child_process.exec('git commit -m ' + commitComment + ' generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
               if (err) throw error;
               console.log('committed suppression');
