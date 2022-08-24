@@ -49,7 +49,7 @@ jobs:
             let suppression = data[data.length-2].substring(3).trim();
             
             const options = {
-                ignoreAttributes : false
+                ignoreAttributes : true
             };
             const parser = new XMLParser(options);
             let sxml = parser.parse(suppression);
@@ -61,7 +61,8 @@ jobs:
             const generatedSuppressions = fs.readFileSync('generatedSuppressions.xml', 'utf8');
             let suppressionArray = parser.parse(generatedSuppressions);
             console.log('--------------------------------');
-            console.log(suppressionArray);
+            console.log(suppressionArray.suppress[0]);
+            console.log(suppressionArray.suppress[0].packageUrl);
             console.log('--------------------------------');
 
             
