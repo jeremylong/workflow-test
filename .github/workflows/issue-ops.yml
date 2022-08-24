@@ -55,9 +55,10 @@ jobs:
             let commitComment = sxml.suppress.notes.trim();
             commitComment = commitComment.replace(/[[\]{}`'";|\/\\]/g, '');
 
-            console.log('---------------------------');
-            console.log(commitComment);
-            console.log('---------------------------');
+            //validate we haven't already suppressed this one.
+            let suppressionArray = parser.parse('generatedSuppressions.xml');
+            console.log(suppressionArray);
+
 
             var fs = require('fs');
             fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
