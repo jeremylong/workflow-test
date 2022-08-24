@@ -25,8 +25,10 @@ jobs:
         uses: actions/github-script@v5.1.1
         with:
           script: |
+            const { execSync } = require("child_process");
             const {XMLParser} = require("fast-xml-parser");
-            
+            const fs = require('fs');
+
             const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.issue.owner,
@@ -56,12 +58,13 @@ jobs:
             commitComment = commitComment.replace(/[[\]{}`'";|\/\\]/g, '');
 
             //validate we haven't already suppressed this one.
-            let suppressionArray = parser.parse('generatedSuppressions.xml');
+            const generatedSuppressions = fs.readFileSync('generatedSuppressions.xml', 'utf8');
+            let suppressionArray = parser.parse(generatedSuppressions);
             console.log('--------------------------------');
             console.log(suppressionArray);
             console.log('--------------------------------');
 
-            var fs = require('fs');
+            
             fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
               if (err) throw err;
               console.log('add suppression');
@@ -74,8 +77,7 @@ jobs:
             `, err => {
               if (err) throw err;
             });
-
-            const { execSync } = require("child_process");
+            
             execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml;git push origin generatedSuppressions', (err, stdout, stderr) => {
               if (err) throw err;
               console.log('committed suppression');
