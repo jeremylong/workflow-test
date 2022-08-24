@@ -62,7 +62,7 @@ jobs:
             console.log('---------------------------');
 
             
-            fs.appendFile('generatedSuppressions.xml', '\n' + suppression, function (err) {
+            fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
               if (err) throw err;
               console.log('add suppression');
             });
