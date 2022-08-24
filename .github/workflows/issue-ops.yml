@@ -65,13 +65,7 @@ jobs:
               console.log('add suppression');
             });
             
-            fs.appendFileSync('.git/config', `
-            [user]
-              name = github-actions[bot]
-              email = 41898282+github-actions[bot]@users.noreply.github.com
-            `, err => {
-              if (err) throw err;
-            });
+
             const { execSync } = require("child_process");
             execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml;
                       git push origin generatedSuppressions', (err, stdout, stderr) => {
