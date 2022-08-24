@@ -65,7 +65,7 @@ jobs:
               console.log('add suppression');
             });
             
-            var child_process = require("child_process");
+            var {child_process} = require("child_process");
             child_process.exec('git commit -m ' + commitComment + ' generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
               if (err) throw err;
               console.log('committed suppression');
