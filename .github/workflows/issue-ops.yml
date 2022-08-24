@@ -57,8 +57,9 @@ jobs:
 
             //validate we haven't already suppressed this one.
             let suppressionArray = parser.parse('generatedSuppressions.xml');
+            console.log('--------------------------------');
             console.log(suppressionArray);
-
+            console.log('--------------------------------');
 
             var fs = require('fs');
             fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
