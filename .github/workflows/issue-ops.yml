@@ -21,6 +21,7 @@ jobs:
       - run: |
           npm install fast-xml-parser@4.0.9
           npm install fs
+      - uses: fregante/setup-git-user@v1
       - name: fp-ops
         uses: actions/github-script@v5.1.1
         with:
@@ -66,7 +67,8 @@ jobs:
             });
             
             const { execSync } = require("child_process");
-            execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml; git push origin generatedSuppressions', (err, stdout, stderr) => {
+            execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml;
+                      git push origin generatedSuppressions', (err, stdout, stderr) => {
               if (err) throw err;
               console.log('committed suppression');
             }); 
