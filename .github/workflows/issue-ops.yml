@@ -4,10 +4,9 @@ on:
   issue_comment:
     types: [ created ]
 
-
 jobs:
-  issue_commented:
-    name: update suppression
+  update_suppression:
+    name: Update Suppression Rules
     if: ${{ !github.event.issue.pull_request && 
       contains(github.event.issue.labels.*.name, 'FP Report') && 
       contains(github.event.comment.body,'approved') &&
@@ -21,12 +20,13 @@ jobs:
       - run: |
           npm install fast-xml-parser@4.0.9
           npm install fs
-      - name: fp-ops
+      - name: Commit Suppression Rule
+        id: fp-ops-commit
         uses: actions/github-script@v5.1.1
         with:
           script: |
             const { execSync } = require("child_process");
-            const {XMLParser} = require("fast-xml-parser");
+            const { XMLParser } = require("fast-xml-parser");
             const fs = require('fs');
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -52,52 +52,92 @@ jobs:
                 ignoreAttributes : true
             };
             const parser = new XMLParser(options);
-            let sxml = parser.parse(suppression);
+            let proposedRule = parser.parse(suppression);
 
-            let commitComment = sxml.suppress.notes.trim();
+            let commitComment = proposedRule.suppress.notes.trim();
             commitComment = commitComment.replace(/[[\]{}`'";|\/\\]/g, '');
 
             //validate we haven't already suppressed this one.
             const generatedSuppressions = fs.readFileSync('generatedSuppressions.xml', 'utf8');
             let rules = parser.parse(generatedSuppressions);
-            console.log('--------------------------------');
-            console.log(rules.suppress[0]);
-            
-            
+            let found = false;
+            let previousReportNotes = '';
+
             for (r of rules.suppress) {
-              console.log(r.packageUrl);
+              if (proposedRule.packageUrl === r.packageUrl &&
+                  proposedRule.cpe === r.cpe) {
+                    found = true;
+                    previousReportNotes = r.notes.trime();
+                    break;
+                  }
+              }
             }
-            console.log('--------------------------------');
-            fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
-              if (err) throw err;
-              console.log('add suppression');
-            });
-            
-            fs.appendFileSync('.git/config', `
-            [user]
-              name = github-actions[bot]
-              email = 41898282+github-actions[bot]@users.noreply.github.com
-            `, err => {
-              if (err) throw err;
-            });
-            
-            execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml;git push origin generatedSuppressions', (err, stdout, stderr) => {
-              if (err) throw err;
-              console.log('committed suppression');
-            }); 
-      - name: Message success
-        if: ${{ success() }}
-        uses: actions/github-script@v5.1.1
-        env:
-           MSG: '${{steps.set-result.outputs.result}}'
+            if (found) {
+              let prevIssue = previousReportNotes.split('#')[1].trim();
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Suppress already exists in `generatedSuppressions` branch. See issue #' + prevIssue + '.',
+              }); 
+              github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['duplicate']
+              });
+              github.rest.issues.update({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'closed',
+              });
+              core.setOutput('PUBLISH', 'false');
+            } else {
+              fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
+                if (err) throw err;
+                console.log('Suppression rule added');
+              });
+              
+              fs.appendFileSync('suppressions/publishedSuppressions.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">\n' + generatedSuppressions + '\n</suppressions>', function (err) {
+                if (err) throw err;
+                console.log('publishedSuppressions.xml created');
+              });
+
+              fs.appendFileSync('.git/config', `
+              [user]
+                name = github-actions[bot]
+                email = 41898282+github-actions[bot]@users.noreply.github.com
+              `, err => {
+                if (err) throw err;
+              });
+
+              execSync('git commit -m "' + commitComment + '" generatedSuppressions.xml;git push origin generatedSuppressions', (err, stdout, stderr) => {
+                if (err) throw err;
+                console.log('committed suppression rule');
+              });
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Suppress rule has been added to the `generatedSuppressions` branch.',
+              }); 
+              github.rest.issues.update({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'closed',
+              });
+              core.setOutput('PUBLISH', 'true');
+            } 
+      - name: Publish Updated Suppressions
+        if: ${{ steps.fp-ops-commit.OUTPUTS == 'true' }}
+        uses: JamesIves/github-pages-deploy-action@v4.4.0
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Deployment succeeded! ✅',
-            });          
+          branch: gh-pages
+          folder: suppressions
+          target-folder: suppressions
       - name: Message failure
         if: ${{ failure() }}
         uses: actions/github-script@v5.1.1
@@ -107,5 +147,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Deployment failed! ❌',
-            }); 
+              body: 'Failed to automatically generate and publish the suppression rule! ❌',
+            });
