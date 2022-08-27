@@ -69,7 +69,6 @@ jobs:
                     found = true;
                     previousReportNotes = r.notes.trime();
                     break;
-                  }
               }
             }
             if (found) {
