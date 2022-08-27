@@ -42,7 +42,10 @@ jobs:
             )
             
             if (botComments.length<=0) {
-              core.setFailed('Suppression rule from github-actions not found');
+              console.log('Suppression rule from github-actions not found');
+              core.setOutput('publish', 'false');
+              //using core.setFailed() ended execution and the check for failure below (to post a message did not work)
+              core.setOutput('failed', 'true');
               return;
             } 
             let lastComment = botComments[botComments.length-1];
@@ -141,7 +144,7 @@ jobs:
           folder: suppressions
           target-folder: suppressions
       - name: Message failure
-        if: ${{ failure() }}
+        if: ${{ failure() || steps.verify.outputs.failed }}
         uses: actions/github-script@v5.1.1
         with:
           script: |
