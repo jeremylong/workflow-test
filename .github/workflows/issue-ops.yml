@@ -64,18 +64,10 @@ jobs:
             let previousReportNotes = '';
 
             for (r of rules.suppress) {
-              console.log('------------------------');
-              console.log(proposedRule.suppress);
-              console.log(proposedRule.suppress.packageUrl === r.packageUrl);
-              console.log(proposedRule.suppress.packageUrl);
-              console.log(r.packageUrl);
-              console.log(proposedRule.suppress.cpe === r.cpe);
-              console.log(proposedRule.suppress.cpe);
-              console.log(r.cpe);
               if (proposedRule.suppress.packageUrl === r.packageUrl &&
                   proposedRule.suppress.cpe === r.cpe) {
                     found = true;
-                    previousReportNotes = r.notes.trime();
+                    previousReportNotes = r.notes.trim();
                     break;
               }
             }
