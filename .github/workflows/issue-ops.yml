@@ -97,7 +97,9 @@ jobs:
                 if (err) throw err;
                 console.log('Suppression rule added');
               });
-              
+              if (!fs.existsSync('./suppressions')){
+                  fs.mkdirSync('./suppressions');
+              }
               fs.appendFileSync('suppressions/publishedSuppressions.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">\n' + generatedSuppressions + '\n</suppressions>', function (err) {
                 if (err) throw err;
                 console.log('publishedSuppressions.xml created');
