@@ -64,6 +64,13 @@ jobs:
             let previousReportNotes = '';
 
             for (r of rules.suppress) {
+              console.log('------------------------');
+              console.log(proposedRule.packageUrl === r.packageUrl);
+              console.log(proposedRule.packageUrl);
+              console.log(r.packageUrl);
+              console.log(proposedRule.cpe === r.cpe);
+              console.log(proposedRule.cpe);
+              console.log(r.cpe);
               if (proposedRule.packageUrl === r.packageUrl &&
                   proposedRule.cpe === r.cpe) {
                     found = true;
