@@ -65,6 +65,7 @@ jobs:
 
             for (r of rules.suppress) {
               console.log('------------------------');
+              console.log(proposedRule);
               console.log(proposedRule.packageUrl === r.packageUrl);
               console.log(proposedRule.packageUrl);
               console.log(r.packageUrl);
