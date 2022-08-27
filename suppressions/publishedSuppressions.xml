@@ -72,4 +72,11 @@
    <packageUrl regex="true">^pkg:maven/io\.undertow/undertow-core@.*$</packageUrl>
    <cpe>cpe:/a:io.undertow:undertow-core</cpe>
 </suppress>
+<suppress base="true">
+   <notes><![CDATA[
+   FP per issue #4758
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/io\.undertow/undertow-core@.*$</packageUrl>
+   <cpe>cpe:/a:io.undertow:undertow-core</cpe>
+</suppress>
 </suppressions>
