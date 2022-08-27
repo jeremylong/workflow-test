@@ -43,6 +43,7 @@ jobs:
             
             if (botComments.length<=0) {
               core.setFailed('Suppression rule from github-actions not found');
+              return;
             } 
             let lastComment = botComments[botComments.length-1];
             let data = lastComment.body.split('```');
