@@ -144,7 +144,7 @@ jobs:
           folder: suppressions
           target-folder: suppressions
       - name: Message failure
-        if: ${{ failure() || steps.verify.outputs.failed }}
+        if: ${{ failure() || steps.fp-ops-commit.outputs.failed }}
         uses: actions/github-script@v5.1.1
         with:
           script: |
