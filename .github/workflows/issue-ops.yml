@@ -91,7 +91,7 @@ jobs:
                 repo: context.repo.repo,
                 state: 'closed',
               });
-              core.setOutput('PUBLISH', 'false');
+              core.setOutput('publish', 'false');
             } else {
               fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
                 if (err) throw err;
@@ -130,10 +130,10 @@ jobs:
                 repo: context.repo.repo,
                 state: 'closed',
               });
-              core.setOutput('PUBLISH', 'true');
+              core.setOutput('publish', 'true');
             } 
       - name: Publish Updated Suppressions
-        if: ${{ steps.fp-ops-commit.OUTPUTS == 'true' }}
+        if: ${{ steps.fp-ops-commit.outputs.publish == 'true' }}
         uses: JamesIves/github-pages-deploy-action@v4.4.0
         with:
           branch: gh-pages
