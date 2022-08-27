@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 
-
 <suppress base="true">
    <notes><![CDATA[
    FP per issue #4758
@@ -91,6 +90,20 @@
    FP per issue #3
    ]]></notes>
    <packageUrl regex="true">^pkg:maven/io\.undertow/undertow-core@5$</packageUrl>
+   <cpe>cpe:/a:io.undertow:undertow-core</cpe>
+</suppress>
+<suppress base="true">
+   <notes><![CDATA[
+   FP per issue #4758
+   ]]></notes>
+   <packageUrl regex="true">^pkg:gradle/io\.undertow/undertow-core@.*$</packageUrl>
+   <cpe>cpe:/a:io.undertow:undertow-core</cpe>
+</suppress>
+<suppress base="true">
+   <notes><![CDATA[
+   FP per issue #4758
+   ]]></notes>
+   <packageUrl regex="true">^pkg:npm/io\.undertow/undertow-core@.*$</packageUrl>
    <cpe>cpe:/a:io.undertow:undertow-core</cpe>
 </suppress>
 </suppressions>
