@@ -93,7 +93,7 @@ jobs:
               });
               core.setOutput('publish', 'false');
             } else {
-              fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression, function (err) {
+              fs.appendFileSync('generatedSuppressions.xml', '\n' + suppression.trim(), function (err) {
                 if (err) throw err;
                 console.log('Suppression rule added');
               });
